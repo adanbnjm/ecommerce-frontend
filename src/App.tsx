@@ -5,6 +5,8 @@ import AdminLayout from "./components/layout/AdminLayout";
 
 import HomePage from "./pages/store/HomePage";
 import DashboardPage from "./pages/admin/DashboardPage";
+import ProductosPage from "./pages/store/ProductosPage";
+import CarritoPage from "./pages/store/CarritoPage";
 
 function PaginaPendiente({ titulo }: { titulo: string }) {
   return (
@@ -29,11 +31,8 @@ export default function App() {
         <Route path="/" element={<StoreLayout />}>
           <Route index element={<HomePage />} />
 
-          <Route
-            path="productos"
-            element={<PaginaPendiente titulo="Productos" />}
-          />
-
+          <Route path="/productos" element={<ProductosPage />} />
+          <Route path="/carrito" element={<CarritoPage />} />
           <Route
             path="mis-ordenes"
             element={<PaginaPendiente titulo="Mis órdenes" />}
