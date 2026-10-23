@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+
+const Router = import.meta.env.BASE_URL === "/" ? BrowserRouter : HashRouter;
 
 import StoreLayout from "./components/layout/StoreLayout";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -26,7 +28,7 @@ function PaginaPendiente({ titulo }: { titulo: string }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         <Route path="/" element={<StoreLayout />}>
           <Route index element={<HomePage />} />
@@ -70,6 +72,6 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }

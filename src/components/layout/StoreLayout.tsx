@@ -16,6 +16,9 @@ export default function StoreLayout() {
             © {new Date().getFullYear()} Abarrotes Verde
           </p>
 
+          <a href={`${import.meta.env.BASE_URL}reporte-hooks.html`} className="text-sm text-green-700 hover:text-green-900">
+            Reporte de custom hooks
+          </a>
           <Link
             to="/productos"
             className="text-sm text-green-700 hover:text-green-900"

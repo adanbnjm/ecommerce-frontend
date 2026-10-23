@@ -6,6 +6,7 @@ import { productosIniciales } from "../../data/productos";
 import { CATEGORIAS_PERMITIDAS } from "../../constants/categorias";
 import type { Producto } from "../../types/producto";
 import { useCart } from "../../hooks/useCart";
+import { useDebounce } from "../../hooks/useDebounce";
 
 function normalizarCategoria(categoria: string): string {
   return categoria
@@ -21,6 +22,7 @@ const categoriasNormalizadas = new Set(
 
 export default function ProductosPage() {
   const [busqueda, setBusqueda] = useState("");
+  const busquedaPausada = useDebounce(busqueda, 3000);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todas");
   const [mensaje, setMensaje] = useState("");
 
@@ -38,7 +40,7 @@ export default function ProductosPage() {
 
   // 2. Aplicar búsqueda y categoría seleccionada.
   const productosFiltrados = useMemo(() => {
-    const texto = normalizarCategoria(busqueda);
+    const texto = normalizarCategoria(busquedaPausada);
 
     return productosPermitidos.filter((producto) => {
       const coincideNombre = normalizarCategoria(producto.name).includes(texto);
@@ -50,12 +52,13 @@ export default function ProductosPage() {
 
       return coincideNombre && coincideCategoria;
     });
-  }, [productosPermitidos, busqueda, categoriaSeleccionada]);
+  }, [productosPermitidos, busquedaPausada, categoriaSeleccionada]);
 
   const { agregar } = useCart();
 
   function manejarAgregar(producto: Producto) {
     agregar(producto);
+    setMensaje(`${producto.name} agregado al carrito.`);
   }
 
   return (

@@ -1,0 +1,65 @@
+name: Web y reporte desde la rama de hooks
+
+on:
+  push:
+    branches: [feat/custom-hooks]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-custom-hooks
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      pages_enabled: ${{ steps.pages.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          GITHUB_PAGES_BASE: /ecommerce-frontend/
+      - name: Guardar web compilada y reporte
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-abarrotes-hooks
+          path: dist
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Comprobar si el propietario activo Pages
+        id: pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type > /tmp/pages-type 2>/dev/null && grep -qx workflow /tmp/pages-type; then
+            echo 'enabled=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'enabled=false' >> "$GITHUB_OUTPUT"
+            echo 'El propietario debe activar Settings > Pages > GitHub Actions y volver a ejecutar este workflow.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  deploy:
+    if: needs.build.outputs.pages_enabled == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Publicar web
+        id: deployment
+        uses: actions/deploy-pages@v4
