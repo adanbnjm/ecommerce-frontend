@@ -16,8 +16,9 @@ export interface CrearProductoDTO {
   descripcion?: string;
   imagenUrl?: string;
 }
+
 // Producto que devuelve la API
-export type Producto = {
+export type ProductoAPI = {
   id: number;
   name: string;
   description: string | null;
@@ -27,7 +28,7 @@ export type Producto = {
   image_url: string | null;
   created_at: string;
 };
-
+/*
 // Datos que enviamos para crear un producto
 export type ProductoCreate = {
   name: string;
@@ -37,3 +38,4 @@ export type ProductoCreate = {
   category?: string | null;
   image_url?: string | null;
 };
+*/

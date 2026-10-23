@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 
 import ProductCard from "../../components/products/ProductCard";
@@ -7,9 +7,11 @@ import { CATEGORIAS_PERMITIDAS } from "../../constants/categorias";
 import type { Producto } from "../../types/producto";
 import { useCart } from "../../hooks/useCart";
 import { useDebounce } from "../../hooks/useDebounce";
+import { obtenerProductos } from "../../services/productosService";
+import { useApi } from "../../hooks/useApi";
 
-function normalizarCategoria(categoria: string): string {
-  return categoria
+function normalizarCategoria(categoria: string | null | undefined): string {
+  return (categoria ?? "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
@@ -25,17 +27,22 @@ export default function ProductosPage() {
   const busquedaPausada = useDebounce(busqueda, 3000);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todas");
   const [mensaje, setMensaje] = useState("");
+  const cargarProductos = useCallback(() => obtenerProductos(), []);
 
+  const {
+    data: productosApi,
+    cargando,
+    error,
+    recargar,
+  } = useApi(cargarProductos);
   // 1. Excluir todo producto que no pertenezca
   // a las cinco categorías permitidas.
   const productosPermitidos = useMemo(
     () =>
-      productosIniciales.filter(
-        (producto) =>
-          producto.category !== null &&
-          categoriasNormalizadas.has(normalizarCategoria(producto.category)),
+      (productosApi ?? []).filter((producto) =>
+        categoriasNormalizadas.has(normalizarCategoria(producto.categoria)),
       ),
-    [],
+    [productosApi],
   );
 
   // 2. Aplicar búsqueda y categoría seleccionada.
@@ -43,11 +50,13 @@ export default function ProductosPage() {
     const texto = normalizarCategoria(busquedaPausada);
 
     return productosPermitidos.filter((producto) => {
-      const coincideNombre = normalizarCategoria(producto.name).includes(texto);
+      const coincideNombre = normalizarCategoria(producto.nombre).includes(
+        texto,
+      );
 
       const coincideCategoria =
         categoriaSeleccionada === "Todas" ||
-        normalizarCategoria(producto.category ?? "") ===
+        normalizarCategoria(producto.categoria ?? "") ===
           normalizarCategoria(categoriaSeleccionada);
 
       return coincideNombre && coincideCategoria;
@@ -58,7 +67,7 @@ export default function ProductosPage() {
 
   function manejarAgregar(producto: Producto) {
     agregar(producto);
-    setMensaje(`${producto.name} agregado al carrito.`);
+    setMensaje(`${producto.nombre} agregado al carrito.`);
   }
 
   return (
@@ -135,6 +144,7 @@ export default function ProductosPage() {
         </section>
 
         {/* Resultados */}
+
         <section>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-xl font-bold text-gray-900">

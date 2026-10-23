@@ -89,7 +89,7 @@ export function CartProvider({ children }: CartProviderProps) {
   const totalUnidades = items.reduce((total, item) => total + item.cantidad, 0);
 
   const totalPrecio = items.reduce(
-    (total, item) => total + Number(item.producto.price) * item.cantidad,
+    (total, item) => total + Number(item.producto.precio) * item.cantidad,
     0,
   );
 
