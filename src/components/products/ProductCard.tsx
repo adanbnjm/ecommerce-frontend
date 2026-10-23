@@ -8,15 +8,15 @@ type ProductCardProps = {
 
 export default function ProductCard({ producto, onAgregar }: ProductCardProps) {
   const agotado = producto.stock <= 0;
-  const precio = Number(producto.price);
+  const precio = Number(producto.precio);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-green-100 bg-white transition hover:-translate-y-1 hover:shadow-lg">
       <div className="aspect-square bg-green-50">
-        {producto.image_url ? (
+        {producto.imagenUrl ? (
           <img
-            src={producto.image_url}
-            alt={producto.name}
+            src={producto.imagenUrl}
+            alt={producto.nombre}
             className="h-full w-full object-contain p-5"
             loading="lazy"
           />
@@ -29,13 +29,13 @@ export default function ProductCard({ producto, onAgregar }: ProductCardProps) {
 
       <div className="space-y-3 p-4">
         <p className="text-xs font-medium uppercase text-green-700">
-          {producto.category}
+          {producto.categoria}
         </p>
 
-        <h3 className="font-semibold text-gray-900">{producto.name}</h3>
+        <h3 className="font-semibold text-gray-900">{producto.nombre}</h3>
 
         <p className="line-clamp-2 text-sm text-gray-500">
-          {producto.description}
+          {producto.descripcion}
         </p>
 
         <p className="text-xl font-bold text-green-800">

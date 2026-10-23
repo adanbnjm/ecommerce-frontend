@@ -77,10 +77,10 @@ export default function CarritoPage() {
                 className="flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row sm:items-center"
               >
                 <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-green-50">
-                  {producto.image_url ? (
+                  {producto.imagenUrl ? (
                     <img
-                      src={producto.image_url}
-                      alt={producto.name}
+                      src={producto.imagenUrl}
+                      alt={producto.nombre}
                       className="size-full object-contain p-2"
                     />
                   ) : (
@@ -90,19 +90,20 @@ export default function CarritoPage() {
 
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium uppercase text-green-700">
-                    {producto.category ?? "Sin categoría"}
+                    {producto.categoria ?? "Sin categoría"}
                   </p>
 
                   <h2 className="mt-1 font-semibold text-gray-900">
-                    {producto.name}
+                    {producto.nombre}
                   </h2>
 
                   <p className="mt-1 text-sm text-gray-500">
-                    {formatoMoneda(Number(producto.price))} por unidad
+                    {formatoMoneda(Number(producto.precio))} por unidad
                   </p>
 
                   <p className="mt-2 font-semibold text-gray-900">
-                    Subtotal: {formatoMoneda(Number(producto.price) * cantidad)}
+                    Subtotal:{" "}
+                    {formatoMoneda(Number(producto.precio) * cantidad)}
                   </p>
                 </div>
 
@@ -111,7 +112,7 @@ export default function CarritoPage() {
                     <button
                       type="button"
                       onClick={() => disminuir(producto.id)}
-                      aria-label={`Disminuir cantidad de ${producto.name}`}
+                      aria-label={`Disminuir cantidad de ${producto.nombre}`}
                       className="rounded-lg p-2 hover:bg-gray-100"
                     >
                       <Minus size={16} />
@@ -125,7 +126,7 @@ export default function CarritoPage() {
                       type="button"
                       onClick={() => aumentar(producto.id)}
                       disabled={cantidad >= producto.stock}
-                      aria-label={`Aumentar cantidad de ${producto.name}`}
+                      aria-label={`Aumentar cantidad de ${producto.nombre}`}
                       className="rounded-lg p-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Plus size={16} />
